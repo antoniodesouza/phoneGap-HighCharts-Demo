@@ -47,13 +47,13 @@ $$(document).on('pageInit', function(e) {
     });
 
     if (page.name === 'centralWest' || page.name === 'terminalB' || page.name === 'terminalE' || page.name === 'economyLot') {
-        
+
         $$('.get-chart').on('click', function() {
-            $.getJSON(remoteURL + 'type=' + type + '&from=' + $('.from-date').val()+ '&to=' + $('.to-date').val()).done(function(data) {
+            $.getJSON(remoteURL + 'type=' + type + '&from=' + $('.from-date').val() + '&to=' + $('.to-date').val()).done(function(data) {
                 genChartByHighCharts(data, 'chart-content', type, type, '');
             });
         });
-        
+
         $$('.history-selected').on('click', function() {
             isPrediction = 0;
             $.getJSON(remoteURL + 'type=' + type + '&isPrediction=' + isPrediction).done(function(data) {
@@ -158,7 +158,7 @@ function genChartByHighCharts(_chartData, _elementId, _title, _label_title, _val
 
         rangeSelector: {
             selected: 1,
-            inputEnabled: $('#' + _elementId).width() > 480,
+            inputEnabled: false, //$('#' + _elementId).width() > 480,
             buttons: [{
                 type: 'day',
                 count: 1,
@@ -196,7 +196,11 @@ function genChartByHighCharts(_chartData, _elementId, _title, _label_title, _val
                 valueDecimals: 2,
                 valueSuffix: _valueSuffix
             }
-        }]
+        }],
+
+        exporting: {
+            enabled: false
+        }
     });
 }
 
