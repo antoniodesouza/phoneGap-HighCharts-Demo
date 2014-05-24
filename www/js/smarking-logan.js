@@ -47,7 +47,6 @@ $$(document).on('pageInit', function(e) {
     });
 
     if (page.name === 'centralWest' || page.name === 'terminalB' || page.name === 'terminalE' || page.name === 'economyLot') {
-
         $$('.get-chart').on('click', function() {
             $.getJSON(remoteURL + 'type=' + type + '&from=' + $('.from-date').val() + '&to=' + $('.to-date').val()).done(function(data) {
                 genChartByHighCharts(data, 'chart-content', type, type, '');
@@ -64,7 +63,6 @@ $$(document).on('pageInit', function(e) {
 
         $$('.predicton-selected').on('click', function() {
             isPrediction = 1;
-            console.log(isPrediction);
             $.getJSON(remoteURL + 'type=' + type + '&isPrediction=' + isPrediction).done(function(data) {
                 genChartByHighCharts(data, 'chart-content', type, type, '');
             });
@@ -74,6 +72,7 @@ $$(document).on('pageInit', function(e) {
         $$('.occupancy-link').on('click', function() {
             type = 'occupancy';
             $.getJSON(remoteURL + 'type=' + type + '&isPrediction=' + isPrediction).done(function(data) {
+
                 genChartByHighCharts(data, 'chart-content', type, type, '');
             });
         });
@@ -101,6 +100,9 @@ $$(document).on('pageInit', function(e) {
     }
 });
 
+$$('.pre-loader').on('click', function() {
+    myApp.showPreloader();
+})
 // Required for demo popover
 $$('.popover a').on('click', function() {
     myApp.closeModal('.popover');
@@ -148,6 +150,7 @@ function createContentPage() {
 }
 
 function genChartByHighCharts(_chartData, _elementId, _title, _label_title, _valueSuffix) {
+    myApp.hidePreloader();
     $('#' + _elementId).empty();
     Highcharts.setOptions({
         global: {
