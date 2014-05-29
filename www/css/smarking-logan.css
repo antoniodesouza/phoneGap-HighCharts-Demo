@@ -164,3 +164,30 @@ i.ks-tabbar-icon-4 {
 .active i.ks-tabbar-icon-4 {
   background-image: url("data:image/svg+xml;charset=utf-8,<svg xmlns='http://www.w3.org/2000/svg' x='0px' y='0px' viewBox='0 0 25 19' fill='%23007aff'><g><path d='M23,3h-4.1l-2.4-2.4c0,0,0,0,0,0l0,0C16.1,0.2,15.6,0,15.1,0h-5C9.5,0,9,0.3,8.6,0.6l0,0L6.2,3H2C0.9,3,0,3.9,0,5v12 c0,1.1,0.9,2,2,2h21c1.1,0,2-0.9,2-2V5C25,3.9,24.1,3,23,3z M12.5,16c-3,0-5.5-2.5-5.5-5.5C7,7.5,9.5,5,12.5,5c3,0,5.5,2.5,5.5,5.5 C18,13.5,15.5,16,12.5,16z'/><circle cx='12.5' cy='10.5' r='4.5'/></g></svg>");
 }
+
+.actions-modal-group input {
+  text-align: center;
+  font-weight: normal;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  -ms-appearance: none;
+  appearance: none;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  border: none;
+  background: none;
+  border-radius: 0 0 0 0;
+  -webkit-box-shadow: none;
+  box-shadow: none;
+  display: block;
+  padding: 0 0 0 50px;
+  margin: 0;
+  width: 100%;
+  height: 43px;
+  color: #007aff;
+  font-family: inherit;
+  cursor: pointer;
+  line-height: 43px;
+  font-size: 20px;
+}

@@ -32,6 +32,8 @@ $$(document).on('pageInit', function(e) {
     remoteURL = '';
     type = 'occupancy';
     isPrediction = 0;
+    fromdate = '2014-04-13';
+    todate = '2014-05-13';
 
     if (page.name === 'centralWest') {
         remoteURL = 'http://smarking.net:8080/garage?garage=centralWest&';
@@ -47,55 +49,62 @@ $$(document).on('pageInit', function(e) {
     });
 
     if (page.name === 'centralWest' || page.name === 'terminalB' || page.name === 'terminalE' || page.name === 'economyLot') {
-        $$('.get-chart').on('click', function() {
-            $.getJSON(remoteURL + 'type=' + type + '&from=' + $('.from-date').val() + '&to=' + $('.to-date').val()).done(function(data) {
-                genChartByHighCharts(data, 'chart-content', type, type, '');
-            });
+
+        $$('.action-period').on('click', function() {
+            var buttons = [{
+                fromdate: true
+            }, {
+                todate: true
+            }, {
+                text: 'Get Chart',
+                onClick: function() {
+                    fromdate = $('.from-date').val();
+                    todate = $('.to-date').val();
+                    myApp.updateChart();
+                }
+            }, ];
+            myApp.myactions(buttons);
+        });
+
+        $$('.action-type').on('click', function() {
+            var buttons = [{
+                text: 'Occupancy',
+                onClick: function() {
+                    type = 'occupancy';
+                    myApp.updateChart();
+                }
+            }, {
+                text: 'Entry',
+                onClick: function() {
+                    type = 'entry';
+                    myApp.updateChart();
+                }
+            }, {
+                text: 'Exits',
+                onClick: function() {
+                    type = 'exits';
+                    myApp.updateChart();
+                }
+            }, {
+                text: 'Duration',
+                onClick: function() {
+                    type = 'duration';
+                    myApp.updateChart();
+                }
+            }, ];
+            myApp.myactions(buttons);
         });
 
         $$('.history-selected').on('click', function() {
             isPrediction = 0;
-            $.getJSON(remoteURL + 'type=' + type + '&isPrediction=' + isPrediction).done(function(data) {
-                genChartByHighCharts(data, 'chart-content', type, type, '');
-            });
+            myApp.updateChart();
             myApp.closePanel();
         });
 
         $$('.predicton-selected').on('click', function() {
             isPrediction = 1;
-            $.getJSON(remoteURL + 'type=' + type + '&isPrediction=' + isPrediction).done(function(data) {
-                genChartByHighCharts(data, 'chart-content', type, type, '');
-            });
+            myApp.updateChart();
             myApp.closePanel();
-        });
-
-        $$('.occupancy-link').on('click', function() {
-            type = 'occupancy';
-            $.getJSON(remoteURL + 'type=' + type + '&isPrediction=' + isPrediction).done(function(data) {
-
-                genChartByHighCharts(data, 'chart-content', type, type, '');
-            });
-        });
-
-        $$('.entry-link').on('click', function() {
-            type = 'entry';
-            $.getJSON(remoteURL + 'type=' + type + '&isPrediction=' + isPrediction).done(function(data) {
-                genChartByHighCharts(data, 'chart-content', type, type, '');
-            });
-        });
-
-        $$('.exit-link').on('click', function() {
-            type = 'exits';
-            $.getJSON(remoteURL + 'type=' + type + '&isPrediction=' + isPrediction).done(function(data) {
-                genChartByHighCharts(data, 'chart-content', type, type, '');
-            });
-        });
-
-        $$('.duration-link').on('click', function() {
-            type = 'duration';
-            $.getJSON(remoteURL + 'type=' + type + '&isPrediction=' + isPrediction).done(function(data) {
-                genChartByHighCharts(data, 'chart-content', type, type, 'min');
-            });
         });
     }
 });
@@ -160,7 +169,7 @@ function genChartByHighCharts(_chartData, _elementId, _title, _label_title, _val
     $('#' + _elementId).highcharts('StockChart', {
 
         rangeSelector: {
-            selected: 1,
+            selected: 5,
             inputEnabled: false, //$('#' + _elementId).width() > 480,
             buttons: [{
                 type: 'day',
@@ -204,7 +213,79 @@ function genChartByHighCharts(_chartData, _elementId, _title, _label_title, _val
         exporting: {
             enabled: false
         }
+
     });
 }
 
 $$(document).on('click', '.ks-generate-page', createContentPage);
+
+myApp.updateChart = function() {
+    if (isPrediction) {
+        $.getJSON(remoteURL + 'type=' + type + '&isPrediction=' + isPrediction).done(function(data) {
+            genChartByHighCharts(data, 'chart-content', type, type, '');
+        });
+    } else if (type == 'duration') {
+        $.getJSON(remoteURL + 'type=' + type + '&from=' + fromdate + '&to=' + todate).done(function(data) {
+            genChartByHighCharts(data, 'chart-content', type, type, 'min');
+        });
+    } else {
+        $.getJSON(remoteURL + 'type=' + type + '&from=' + fromdate + '&to=' + todate).done(function(data) {
+            genChartByHighCharts(data, 'chart-content', type, type, '');
+        });
+    }
+};
+
+myApp.myactions = function(params) {
+    _modalTemplateTempDiv = document.createElement('div');
+
+    params = params || [];
+    if (params.length > 0 && !$.isArray(params[0])) {
+        params = [params];
+    }
+
+    var actionsTemplate = myApp.params.modalActionsTemplate;
+    var buttonsHTML = '';
+    for (var i = 0; i < params.length; i++) {
+        for (var j = 0; j < params[i].length; j++) {
+
+
+            if (j === 0) buttonsHTML += '<div class="actions-modal-group">';
+            var button = params[i][j];
+            var buttonClass = button.label ? 'actions-modal-label' : 'actions-modal-button';
+            if (button.bold) buttonClass += ' actions-modal-button-bold';
+            if (button.red) buttonClass += ' actions-modal-button-red';
+            if (button.fromdate) {
+                buttonsHTML += '<span class="actions-modal-label"><input type="date" class="list-button item-link from-date" name="from-date" value="' + fromdate + '"></span>';
+            } else if (button.todate) {
+                buttonsHTML += '<span class="actions-modal-label"><input type="date" class="to-date" name="to-date" value="' + todate + '"></span>';
+            } else if (button.text) {
+                buttonsHTML += '<span class="' + buttonClass + '">' + button.text + '</span>';
+            }
+            if (j === params[i].length - 1) buttonsHTML += '</div>';
+        }
+    }
+
+    var modalHTML = actionsTemplate.replace(/{{buttons}}/g, buttonsHTML);
+
+    _modalTemplateTempDiv.innerHTML = modalHTML;
+    var modal = $(_modalTemplateTempDiv).children();
+    $('body').append(modal[0]);
+
+    var groups = modal.find('.actions-modal-group');
+    groups.each(function(index, el) {
+        var groupIndex = index;
+        $(el).children().each(function(index, el) {
+            var buttonIndex = index;
+            var buttonParams = params[groupIndex][buttonIndex];
+            if ($(el).hasClass('actions-modal-button')) {
+                $(el).on('click', function(e) {
+                    if (buttonParams.close !== false) myApp.closeModal(modal);
+                    if (buttonParams.onClick) buttonParams.onClick(modal, e);
+                });
+            }
+        });
+    });
+
+    myApp.openModal(modal);
+    return modal[0];
+};
