@@ -32,8 +32,8 @@ $$(document).on('pageInit', function(e) {
     remoteURL = '';
     type = 'occupancy';
     isPrediction = 0;
-    fromdate = '2014-04-13';
-    todate = '2014-05-13';
+    fromdate = myApp.getDate(-30);   // Chart data from the first day of current year
+    todate = myApp.getDate();       // Chart data to today
 
     if (page.name === 'centralWest') {
         remoteURL = 'http://smarking.net:8080/garage?garage=centralWest&';
@@ -44,66 +44,77 @@ $$(document).on('pageInit', function(e) {
     } else if (page.name === 'economyLot') {
         remoteURL = 'http://smarking.net:8080/garage?garage=economyLot&';
     }
-    $.getJSON(remoteURL + 'type=' + type + '&isPrediction=' + isPrediction).done(function(data) {
-        genChartByHighCharts(data, 'chart-content', type, type);
-    });
-
+    myApp.loadChart();
+    
     if (page.name === 'centralWest' || page.name === 'terminalB' || page.name === 'terminalE' || page.name === 'economyLot') {
-
-        $$('.action-period').on('click', function() {
-            var buttons = [{
-                fromdate: true
-            }, {
-                todate: true
-            }, {
-                text: 'Get Chart',
-                onClick: function() {
-                    fromdate = $('.from-date').val();
-                    todate = $('.to-date').val();
-                    myApp.updateChart();
-                }
-            }, ];
+        
+        $$('.action-period').on('click', function () {
+            myApp.updatePeriod();
+            var buttons = [
+                {
+                    fromdate: true
+                },
+                {
+                    todate: true
+                },
+                {
+                    text: 'Get Chart',
+                    onClick: function () {
+                        fromdate = $('.from-date').val();
+                        todate = $('.to-date').val();
+                        myApp.updateChart();
+                    }
+                },
+            ];
             myApp.myactions(buttons);
         });
-
-        $$('.action-type').on('click', function() {
-            var buttons = [{
-                text: 'Occupancy',
-                onClick: function() {
-                    type = 'occupancy';
-                    myApp.updateChart();
-                }
-            }, {
-                text: 'Entry',
-                onClick: function() {
-                    type = 'entry';
-                    myApp.updateChart();
-                }
-            }, {
-                text: 'Exits',
-                onClick: function() {
-                    type = 'exits';
-                    myApp.updateChart();
-                }
-            }, {
-                text: 'Duration',
-                onClick: function() {
-                    type = 'duration';
-                    myApp.updateChart();
-                }
-            }, ];
+        
+        $$('.action-type').on('click', function () {
+            myApp.updatePeriod();
+            var buttons = [
+                {
+                    text: 'Occupancy',
+                    onClick: function () {
+                        type = 'occupancy';
+                        myApp.loadChart();
+                    }
+                },
+                {
+                    text: 'Entry',
+                    onClick: function () {
+                        type = 'entry';
+                        myApp.loadChart();
+                    }
+                },
+                {
+                    text: 'Exits',
+                    onClick: function () {
+                        type = 'exits';
+                        myApp.loadChart();
+                    }
+                },
+                {
+                    text: 'Duration',
+                    onClick: function () {
+                        type = 'duration';
+                        myApp.loadChart();
+                    }
+                },
+            ];
             myApp.myactions(buttons);
-        });
-
+        });        
+        
         $$('.history-selected').on('click', function() {
+            myApp.updatePeriod();
             isPrediction = 0;
-            myApp.updateChart();
+            myApp.loadChart();
             myApp.closePanel();
         });
 
         $$('.predicton-selected').on('click', function() {
+            myApp.updatePeriod();
             isPrediction = 1;
-            myApp.updateChart();
+            myApp.loadChart();
             myApp.closePanel();
         });
     }
@@ -168,9 +179,22 @@ function genChartByHighCharts(_chartData, _elementId, _title, _label_title, _val
     });
     $('#' + _elementId).highcharts('StockChart', {
 
+        chart: {
+	        events: {
+	        	load: function() {
+                    if(isPrediction == 0){
+                        this.xAxis[0].setExtremes(
+                            Date.parse(fromdate),
+                            Date.parse(todate)
+                        );
+                    }
+	        	}
+	        }
+	    },
+        
         rangeSelector: {
-            selected: 5,
-            inputEnabled: false, //$('#' + _elementId).width() > 480,
+            selected: 2,
+            inputEnabled: false,
             buttons: [{
                 type: 'day',
                 count: 1,
@@ -196,7 +220,7 @@ function genChartByHighCharts(_chartData, _elementId, _title, _label_title, _val
                 text: 'All'
             }],
         },
-
+        
         title: {
             text: _title
         },
@@ -209,35 +233,102 @@ function genChartByHighCharts(_chartData, _elementId, _title, _label_title, _val
                 valueSuffix: _valueSuffix
             }
         }],
-
+        
+        /*
+        xAxis: {
+	    	minRange: 6 * 3600 * 1000 // Do not allow user to zoom in less than 6 hours
+	    },
+        */
+        
         exporting: {
             enabled: false
         }
-
+        
     });
 }
 
 $$(document).on('click', '.ks-generate-page', createContentPage);
 
-myApp.updateChart = function() {
-    if (isPrediction) {
+myApp.loadChart = function () {
+    var firstDate = myApp.getDate(-365);   // Chart data from the first day of current year
+    var lastDate = myApp.getDate();        // Chart data to today
+    if(isPrediction){
         $.getJSON(remoteURL + 'type=' + type + '&isPrediction=' + isPrediction).done(function(data) {
             genChartByHighCharts(data, 'chart-content', type, type, '');
         });
-    } else if (type == 'duration') {
-        $.getJSON(remoteURL + 'type=' + type + '&from=' + fromdate + '&to=' + todate).done(function(data) {
+    }
+    else if(type == 'duration'){
+        $.getJSON(remoteURL + 'type=' + type + '&from=' + firstDate + '&to=' + lastDate).done(function(data) {
             genChartByHighCharts(data, 'chart-content', type, type, 'min');
         });
-    } else {
-        $.getJSON(remoteURL + 'type=' + type + '&from=' + fromdate + '&to=' + todate).done(function(data) {
+    }
+    else{
+        $.getJSON(remoteURL + 'type=' + type + '&from=' + firstDate + '&to=' + lastDate).done(function(data) {
             genChartByHighCharts(data, 'chart-content', type, type, '');
         });
     }
 };
 
-myApp.myactions = function(params) {
-    _modalTemplateTempDiv = document.createElement('div');
+myApp.updateChart = function () {
+    var chart = $('#chart-content').highcharts();
+    chart.xAxis[0].setExtremes(
+        Date.parse(fromdate),
+        Date.parse(todate)
+    );
+};
 
+myApp.getDate = function (dayOffSet) {
+    if(dayOffSet == undefined){
+        dayOffSet = 0;
+    }       
+    var today = new Date();
+    var milli = (new Date()).getMilliseconds() + dayOffSet * 24 * 3600 * 1000;
+    today.setMilliseconds(milli);
+    var dd = today.getDate();
+    var mm = today.getMonth()+1; //January is 0!
+    var yyyy = today.getFullYear();
+
+    if(dd<10) {
+        dd='0'+dd
+    } 
+
+    if(mm<10) {
+        mm='0'+mm
+    } 
+
+    today = yyyy + '-' + mm + '-' + dd;
+    return today;
+};
+
+myApp.updatePeriod = function () {
+    if(isPrediction == 0){
+        var chart = $('#chart-content').highcharts();
+        fromdate = myApp.translateDate(chart.xAxis[0].getExtremes().min);
+        todate = myApp.translateDate(chart.xAxis[0].getExtremes().max);
+    }
+};
+
+myApp.translateDate = function (milli) {
+    var today = new Date(milli);
+    var dd = today.getDate();
+    var mm = today.getMonth()+1; //January is 0!
+    var yyyy = today.getFullYear();
+
+    if(dd<10) {
+        dd='0'+dd
+    } 
+
+    if(mm<10) {
+        mm='0'+mm
+    } 
+
+    today = yyyy + '-' + mm + '-' + dd;
+    return today;
+};
+
+myApp.myactions = function (params) {
+    _modalTemplateTempDiv = document.createElement('div');
+    
     params = params || [];
     if (params.length > 0 && !$.isArray(params[0])) {
         params = [params];
@@ -247,8 +338,8 @@ myApp.myactions = function(params) {
     var buttonsHTML = '';
     for (var i = 0; i < params.length; i++) {
         for (var j = 0; j < params[i].length; j++) {
-
-
+            
+                
             if (j === 0) buttonsHTML += '<div class="actions-modal-group">';
             var button = params[i][j];
             var buttonClass = button.label ? 'actions-modal-label' : 'actions-modal-button';
@@ -256,36 +347,38 @@ myApp.myactions = function(params) {
             if (button.red) buttonClass += ' actions-modal-button-red';
             if (button.fromdate) {
                 buttonsHTML += '<span class="actions-modal-label"><input type="date" class="list-button item-link from-date" name="from-date" value="' + fromdate + '"></span>';
-            } else if (button.todate) {
+            }
+            else if (button.todate) {
                 buttonsHTML += '<span class="actions-modal-label"><input type="date" class="to-date" name="to-date" value="' + todate + '"></span>';
-            } else if (button.text) {
+            }
+            else if (button.text){
                 buttonsHTML += '<span class="' + buttonClass + '">' + button.text + '</span>';
             }
             if (j === params[i].length - 1) buttonsHTML += '</div>';
         }
     }
-
+    
     var modalHTML = actionsTemplate.replace(/{{buttons}}/g, buttonsHTML);
 
     _modalTemplateTempDiv.innerHTML = modalHTML;
     var modal = $(_modalTemplateTempDiv).children();
     $('body').append(modal[0]);
-
+        
     var groups = modal.find('.actions-modal-group');
-    groups.each(function(index, el) {
+    groups.each(function (index, el) {
         var groupIndex = index;
-        $(el).children().each(function(index, el) {
+        $(el).children().each(function (index, el) {
             var buttonIndex = index;
             var buttonParams = params[groupIndex][buttonIndex];
             if ($(el).hasClass('actions-modal-button')) {
-                $(el).on('click', function(e) {
+                $(el).on('click', function (e) {
                     if (buttonParams.close !== false) myApp.closeModal(modal);
                     if (buttonParams.onClick) buttonParams.onClick(modal, e);
                 });
             }
         });
     });
-
+    
     myApp.openModal(modal);
     return modal[0];
 };
