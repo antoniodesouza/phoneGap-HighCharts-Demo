@@ -36,13 +36,13 @@ $$(document).on('pageInit', function(e) {
     todate = myApp.getDate();       // Chart data to today
 
     if (page.name === 'centralWest') {
-        remoteURL = 'http://smarking.net:8080/garage?garage=centralWest&';
+        remoteURL = 'http://smarking.net/service/garage?garage=centralWest&';
     } else if (page.name === 'terminalB') {
-        remoteURL = 'http://smarking.net:8080/garage?garage=terminalB&';
+        remoteURL = 'http://smarking.net/service/garage?garage=terminalB&';
     } else if (page.name === 'terminalE') {
-        remoteURL = 'http://smarking.net:8080/garage?garage=terminalE&';
+        remoteURL = 'http://smarking.net/service/garage?garage=terminalE&';
     } else if (page.name === 'economyLot') {
-        remoteURL = 'http://smarking.net:8080/garage?garage=economyLot&';
+        remoteURL = 'http://smarking.net/service/garage?garage=economyLot&';
     }
     myApp.loadChart();
     
