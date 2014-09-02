@@ -6,7 +6,7 @@
         id        = "net.smarking.logan"
         version   = "1.2.0">
 
-    <name>Logan at Smarking</name>
+    <name>Smarking-BOS</name>
     <description>
         A simple Application for Logan Admin Portal.
     </description>

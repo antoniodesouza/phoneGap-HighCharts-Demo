@@ -900,6 +900,26 @@ i.icon.icon-f7 {
   height: 29px;
   background-image: url("../img/i-f7.png");
 }
+i.icon.icon-cw {
+  width: 29px;
+  height: 29px;
+  background-image: url("../img/i-cw.png");
+}
+i.icon.icon-tb {
+  width: 29px;
+  height: 29px;
+  background-image: url("../img/i-tb.png");
+}
+i.icon.icon-te {
+  width: 29px;
+  height: 29px;
+  background-image: url("../img/i-te.png");
+}
+i.icon.icon-ec {
+  width: 29px;
+  height: 29px;
+  background-image: url("../img/i-ec.png");
+}
 i.icon.icon-form-name {
   width: 29px;
   height: 29px;
