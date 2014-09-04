@@ -146,6 +146,11 @@ function genChartByHighCharts(_chartData, _elementId, _title, _label_title, _val
     $('#' + _elementId).highcharts('StockChart', {
 
         chart: {
+            resetZoomButton: {
+                theme: {
+                    display: 'none'
+                }
+            },
 	        events: {
 	        	load: function() {
                     if(isPrediction == 0){
