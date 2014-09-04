@@ -222,16 +222,19 @@ myApp.loadChart = function () {
     var firstDate = myApp.getDate(-365);   // Chart data from the first day of current year
     var lastDate = myApp.getDate();        // Chart data to today
     if(isPrediction){
-        $.getJSON(remoteURL + 'type=' + type + '&isPrediction=' + isPrediction).done(function(data) {
-            genChartByHighCharts(data, 'chart-content', type, type, '');
-        });
-    }
-    else if(type == 'duration'){
+        if(type == 'duration') {
+            // alert: there is no prediction chart for duration
+            myApp.alert("There is no prediction chart for duration");
+        } else {
+            $.getJSON(remoteURL + 'type=' + type + '&isPrediction=' + isPrediction).done(function(data) {
+                genChartByHighCharts(data, 'chart-content', type, type, '');
+            });
+        }
+    } else if(type == 'duration'){
         $.getJSON(remoteURL + 'type=' + type + '&from=' + firstDate + '&to=' + lastDate).done(function(data) {
-            genChartByHighCharts(data, 'chart-content', type, type, 'min');
+            genChartByHighCharts(data, 'chart-content', type, type, ' min');
         });
-    }
-    else{
+    } else {
         $.getJSON(remoteURL + 'type=' + type + '&from=' + firstDate + '&to=' + lastDate).done(function(data) {
             genChartByHighCharts(data, 'chart-content', type, type, '');
         });
