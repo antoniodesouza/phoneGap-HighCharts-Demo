@@ -53,11 +53,9 @@ $$(document).on('pageInit', function(e) {
             var buttons = [
                 {
                     fromdate: true
-                },
-                {
+                }, {
                     todate: true
-                },
-                {
+                }, {
                     text: 'Get Chart',
                     onClick: function () {
                         fromdate = $('.from-date').val();
@@ -78,22 +76,19 @@ $$(document).on('pageInit', function(e) {
                         type = 'occupancy';
                         myApp.loadChart();
                     }
-                },
-                {
+                }, {
                     text: 'Entry',
                     onClick: function () {
                         type = 'entry';
                         myApp.loadChart();
                     }
-                },
-                {
+                }, {
                     text: 'Exits',
                     onClick: function () {
                         type = 'exits';
                         myApp.loadChart();
                     }
-                },
-                {
+                }, {
                     text: 'Duration',
                     onClick: function () {
                         type = 'duration';
@@ -139,35 +134,6 @@ $$('.panel-left, .panel-right').on('close', function() {
     $$('.statusbar-overlay').removeClass('with-panel-left with-panel-right');
 });
 
-// Generate Content Dynamically
-var dynamicPageIndex = 0;
-
-function createContentPage() {
-    mainView.loadContent(
-        '<!-- Top Navbar-->' +
-        '<div class="navbar">' +
-        '  <div class="navbar-inner">' +
-        '	<div class="left"><a href="#" class="back link">Back</a></div>' +
-        '	<div class="center sliding">Dynamic Page ' + (++dynamicPageIndex) + '</div>' +
-        '  </div>' +
-        '</div>' +
-        '<div class="pages">' +
-        '  <!-- Page, data-page contains page name-->' +
-        '  <div data-page="dynamic-content" class="page">' +
-        '	<!-- Scrollable page content-->' +
-        '	<div class="page-content">' +
-        '	  <div class="content-block">' +
-        '		<div class="content-block-inner">' +
-        '		  <p>Here is a dynamic page created on ' + new Date() + ' !</p>' +
-        '		  <p>Go <a href="#" class="back">back</a> or generate <a href="#" class="ks-generate-page">one more page</a>.</p>' +
-        '		</div>' +
-        '	  </div>' +
-        '	</div>' +
-        '  </div>' +
-        '</div>'
-    );
-    return;
-}
 
 function genChartByHighCharts(_chartData, _elementId, _title, _label_title, _valueSuffix) {
     myApp.hidePreloader();
@@ -234,11 +200,11 @@ function genChartByHighCharts(_chartData, _elementId, _title, _label_title, _val
             }
         }],
         
-        /*
+        
         xAxis: {
 	    	minRange: 6 * 3600 * 1000 // Do not allow user to zoom in less than 6 hours
 	    },
-        */
+        
         
         exporting: {
             enabled: false
@@ -246,8 +212,6 @@ function genChartByHighCharts(_chartData, _elementId, _title, _label_title, _val
         
     });
 }
-
-$$(document).on('click', '.ks-generate-page', createContentPage);
 
 myApp.loadChart = function () {
     var firstDate = myApp.getDate(-365);   // Chart data from the first day of current year
