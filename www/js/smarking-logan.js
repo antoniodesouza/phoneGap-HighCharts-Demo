@@ -318,10 +318,10 @@ myApp.myactions = function (params) {
             if (button.bold) buttonClass += ' actions-modal-button-bold';
             if (button.red) buttonClass += ' actions-modal-button-red';
             if (button.fromdate) {
-                buttonsHTML += '<span class="actions-modal-label"><input type="date" class="list-button item-link from-date" name="from-date" value="' + fromdate + '"></span>';
+                buttonsHTML += '<span class="actions-modal-label"><input type="date" min="2014-05-30" class="list-button item-link from-date" name="from-date" value="' + fromdate + '"></span>';
             }
             else if (button.todate) {
-                buttonsHTML += '<span class="actions-modal-label"><input type="date" class="to-date" name="to-date" value="' + todate + '"></span>';
+                buttonsHTML += '<span class="actions-modal-label"><input type="date" min="2014-06-01" class="to-date" name="to-date" value="' + todate + '"></span>';
             }
             else if (button.text){
                 buttonsHTML += '<span class="' + buttonClass + '">' + button.text + '</span>';
