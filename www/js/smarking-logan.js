@@ -60,7 +60,7 @@ $$(document).on('pageInit', function(e) {
                     onClick: function () {
                         fromdate = $('.from-date').val();
                         todate = $('.to-date').val();
-                        myApp.updateChart();
+                        myApp.loadChart(fromdate, todate);
                     }
                 },
             ];
@@ -218,9 +218,9 @@ function genChartByHighCharts(_chartData, _elementId, _title, _label_title, _val
     });
 }
 
-myApp.loadChart = function () {
-    var firstDate = myApp.getDate(-365);   // Chart data from the first day of current year
-    var lastDate = myApp.getDate();        // Chart data to today
+myApp.loadChart = function (firstDate, lastDate) {
+    firstDate = typeof firstDate !== 'undefined' ? firstDate : myApp.getDate(-365);   // Chart data from the first day of current year
+    lastDate  = typeof lastDate !== 'undefined' ? lastDate : myApp.getDate();        // Chart data to today
     if(isPrediction){
         if(type == 'duration') {
             // alert: there is no prediction chart for duration
