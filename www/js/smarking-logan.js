@@ -10,7 +10,7 @@ $.ajaxSetup({
 });
 // Expose Internal DOM library
 var $$ = Framework7.$;
-var BASE_URL = 'http://127.0.0.1:8080/';
+var BASE_URL = 'http://hzhou.me:8888/';
 // Add main view
 var mainView = myApp.addView('.view-main', {
     // Enable Dynamic Navbar for this view
