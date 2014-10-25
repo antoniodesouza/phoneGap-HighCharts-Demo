@@ -348,11 +348,6 @@ myApp.login = function(name, password) {
 myApp.logout = function() {
     myApp.closePanel();
     mainView.loadPage('login.html');
-    $.ajax({
-        type: 'POST',
-        url: BASE_URL + "logout",
-        async: false
-    });
     $.jStorage.deleteKey("name");
     $.jStorage.deleteKey("token");
     $.jStorage.deleteKey("password");
