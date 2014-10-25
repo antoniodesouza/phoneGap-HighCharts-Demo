@@ -346,6 +346,8 @@ myApp.login = function(name, password) {
     });
 };
 myApp.logout = function() {
+    myApp.closePanel();
+    mainView.loadPage('login.html');
     $.ajax({
         type: 'POST',
         url: BASE_URL + "logout",
@@ -354,7 +356,5 @@ myApp.logout = function() {
     $.jStorage.deleteKey("name");
     $.jStorage.deleteKey("token");
     $.jStorage.deleteKey("password");
-    myApp.closePanel();
-    mainView.loadPage('login.html');
     //document.location = 'index.html';
 };
