@@ -10,7 +10,7 @@ $.ajaxSetup({
 });
 // Expose Internal DOM library
 var $$ = Framework7.$;
-var BASE_URL = 'http://hzhou.me:8888/';
+var BASE_URL = 'http://hzhou.me:8888/service/';
 // Add main view
 var mainView = myApp.addView('.view-main', {
     // Enable Dynamic Navbar for this view
@@ -22,7 +22,6 @@ var rightView = myApp.addView('.view-right', {
     dynamicNavbar: true
 });
 if (!$.jStorage.get("token")) {
-    console.log("I am here");
     mainView.loadPage('login.html');
 }
 // Show/hide preloader for remote ajax loaded pages
